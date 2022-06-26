@@ -1,0 +1,26 @@
+{
+  "dependencies": {
+    "express": "^4.18.1"
+  },
+  "name": "fxhash-whitelist-checker",
+  "description": "a tool for you to check your whitelists",
+  "version": "1.0.0",
+  "main": "app.js",
+  "devDependencies": {
+    "nodemon": "^2.0.18"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/newyellow/fxhash-whitelist-checker.git"
+  },
+  "author": "newyellow",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/newyellow/fxhash-whitelist-checker/issues"
+  },
+  "homepage": "https://github.com/newyellow/fxhash-whitelist-checker#readme"
+}

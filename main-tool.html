@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whitelist checker</title>
+    <script src="jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div id="main-search-area">
+        <input id="main-search-bar" type="text" />
+        <input type="button" value="Search By ID" onclick="searchByIdBtn()" />
+        <input type="button" value="Search By Query" onclick="searchByQueryBtn()" />
+    </div>
+    <main id="main-display"></main>
+
+    <script>
+        let wallets = [];
+
+        $(window).on('load', function(){
+            getAddressList();
+        });
+
+        async function getAddressList () {
+            let data = await fetch('address-list.json');
+            let list = await data.json();
+
+            for(let prop in list)
+            {
+                let newObj = {};
+                newObj.name = prop;
+                newObj.address = list[prop];
+
+                wallets.push(newObj);
+            }
+        }
+
+        const originalQuery = `
+        query GetGenerativeTokens {
+            generativeTokens(filters: {$$filterString$$}) {
+                id
+                name
+                reserves {
+                data
+                amount
+                }
+                balance
+                objktsCount
+                royalties
+                supply
+                thumbnailUri
+                tags
+            }
+        }
+        `;
+
+        async function searchByIdBtn () {
+            let inputData = $('#main-search-bar').val();
+            let targetIds = [];
+
+            let splittedStr = inputData.split(',');
+
+            for(let i=0; i< splittedStr.length; i++)
+            {
+                let idNumber = parseInt(splittedStr[i]);
+
+                if(!Number.isNaN(idNumber))
+                {
+                    targetIds.push(idNumber);
+                }
+            }
+
+            if(targetIds.length == 0)
+                return;
+
+            let data = await getGenerativeTokensByIds(targetIds);
+        }
+
+        function searchByQueryBtn () {
+
+        }
+
+        async function getGenerativeTokensByIds(targetIds)
+        {
+            let idString = "";
+
+            for(let i=0; i< targetIds.length; i++)
+            {
+                if(i != 0)
+                    idString += ",";
+                idString += targetIds[i];
+            }
+
+            const idQuery = originalQuery.replace('$$filterString$$', `id_in: [${idString}]`);
+
+            console.log(idQuery);
+            let data = await fetchGraphQL(idQuery, "GetGenerativeTokens", "");
+
+            console.log(data);
+        }
+
+        async function getGenerativeTokensBySearch (searchString)
+        {
+            const searchQuery = originalQuery.replace('$$filterString$$', `searchQuery_eq: "${searchString}"`);
+        }
+
+        async function fetchGraphQL(operationsDoc, operationName) {
+            const result = await fetch(
+                "https://api.fxhash.xyz/graphql",
+                {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        query: operationsDoc
+                    })
+                }
+            );
+
+            let jsonData = await result.json();
+            return jsonData.data.generativeTokens;
+        }
+    </script>
+</body>
+</html>
