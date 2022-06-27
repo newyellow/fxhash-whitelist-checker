@@ -6,6 +6,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Whitelist checker</title>
     <script src="jquery-3.6.0.min.js"></script>
+    <style>
+        .generativeToken
+        {
+            display: inline-flex;
+            flex-wrap: wrap;
+            justify-content: center;
+
+            width: 330px;
+            padding: 10px;
+            margin: 12px;
+
+            border: 2px solid #AAA;
+            background-color: #EEE;
+
+            cursor: pointer;
+        }
+
+        .generativeToken .thumbnail
+        {
+            width: 300px;
+            height: 300px;
+        }
+
+        .generativeToken .title
+        {
+            width: 300px;
+
+            font-size: 20px;
+            font-weight: 600;
+            margin: 6px;
+        }
+
+        .generativeToken .desc
+        {
+            width: 300px;
+
+            font-size: 14px;
+            margin: 6px;
+        }
+
+        .generativeToken .reserve
+        {
+            width: 300px;
+            justify-content: flex-start;
+        }
+
+        .generativeToken .foundWalletTag
+        {
+            padding: 2px;
+            margin: 4px;
+
+            display: inline-block;
+
+            border: 2px solid #AAA;
+            background-color: #FFF;
+        }
+
+    </style>
 </head>
 <body>
     <div id="main-search-area">
@@ -74,11 +132,24 @@
             if(targetIds.length == 0)
                 return;
 
-            let data = await getGenerativeTokensByIds(targetIds);
+            let tokenDatas = await getGenerativeTokensByIds(targetIds);
+            
+            console.log(tokenDatas);
+            for(let i=0; i< tokenDatas.length; i++)
+            {
+                addGenTokenObject(tokenDatas[i]);
+            }
         }
 
-        function searchByQueryBtn () {
+        async function searchByQueryBtn () {
+            let inputData = $('#main-search-bar').val();
+            let tokenDatas = await getGenerativeTokensBySearch(inputData);
 
+            console.log(tokenDatas);
+            for(let i=0; i< tokenDatas.length; i++)
+            {
+                addGenTokenObject(tokenDatas[i]);
+            }
         }
 
         async function getGenerativeTokensByIds(targetIds)
@@ -95,14 +166,17 @@
             const idQuery = originalQuery.replace('$$filterString$$', `id_in: [${idString}]`);
 
             console.log(idQuery);
-            let data = await fetchGraphQL(idQuery, "GetGenerativeTokens", "");
-
-            console.log(data);
+            let data = await fetchGraphQL(idQuery, "GetGenerativeTokens");
+            return data;
         }
 
         async function getGenerativeTokensBySearch (searchString)
         {
             const searchQuery = originalQuery.replace('$$filterString$$', `searchQuery_eq: "${searchString}"`);
+
+            console.log(searchQuery);
+            let data = await fetchGraphQL(searchQuery, "GetGenerativeTokens");
+            return data;
         }
 
         async function fetchGraphQL(operationsDoc, operationName) {
@@ -121,6 +195,60 @@
 
             let jsonData = await result.json();
             return jsonData.data.generativeTokens;
+        }
+
+        function addGenTokenObject (objData) {
+
+            let wrapper = $('<div></div>').addClass('generativeToken');
+            let thumbnail = $('<div></div>').addClass('thumbnail');
+            let titleDiv = $('<div></div>').addClass('title');
+            let descDiv = $('<div></div>').addClass('desc');
+            let reserveDiv = $('<div></div>').addClass('reserve');
+
+            wrapper.attr('id', `generative-${objData.id}`);
+            wrapper.on('click', ()=>{
+                window.open('https://fxhash.xyz/generative/' + objData.id);
+            });
+
+            let thumbnailGatewayUri = objData.thumbnailUri.replace('ipfs://', 'https://gateway.fxhash.xyz/ipfs/');
+            thumbnail.css('background-image', `url(${thumbnailGatewayUri})`);
+            wrapper.append(thumbnail);
+
+            titleDiv.text(objData.name);
+            wrapper.append(titleDiv);
+
+            descDiv.text(`${objData.objktsCount}/${objData.supply}`);
+            wrapper.append(descDiv);
+
+            // check reserve list
+            for(let i=0; i< objData.reserves.length; i++)
+            {
+                console.log(objData.reserves[i]);
+                for(let address in objData.reserves[i].data)
+                {
+                    
+                    let remainAmount = objData.reserves[i].data[address];
+
+                    console.log(`${address} remain: ${remainAmount}`);
+                    if(remainAmount == 0)
+                        continue;
+                    
+                    for(let w=0; w< wallets.length; w++)
+                    {
+                        if(address == wallets[w].address)
+                        {
+                            console.log("found!: " + address);
+
+                            let userDiv = $('<div></div>').addClass('foundWalletTag');
+                            userDiv.text(wallets[w].name);
+                            reserveDiv.append(userDiv);
+                        }
+                    }
+                }
+            }
+            wrapper.append(reserveDiv);
+
+            $('#main-display').append(wrapper);
         }
     </script>
 </body>
