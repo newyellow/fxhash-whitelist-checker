@@ -50,13 +50,14 @@
             <div class="card"
                 style="background-image: url(https://gateway.fxhash.xyz/ipfs/QmRyum7v2jovbUrAZWYfVGAvSLsEYwhwTbZuBUK9JQon6R)">
                 <div class="card-header">
-                    <img class="holder-img" src="https://media.fxhash.xyz/w_256/QmU4QCnu5qVxLXzzX3ooWbq9ACqxcxh4EW49huDNDLG4Qm" />
+                    <img class="holder-img"
+                        src="https://media.fxhash.xyz/w_256/QmU4QCnu5qVxLXzzX3ooWbq9ACqxcxh4EW49huDNDLG4Qm" />
                     <div class="holder-name">Newyellow</div>
                 </div>
                 <div class="card-body">
                     123
                 </div>
-                
+
                 <div class="card-footer">
                     <h5 class="token-title">Card title</h5>
                     <h5 class="token-id"><a href="#123" target="_blank">#20963</a></h5>
@@ -64,14 +65,12 @@
                     <div class="container">
                         <div class="row">
                             <div id="offer-string" class="col">Offer 234xtz</div>
-                            <div id="floor-string" class="col">Floor 123xtz</div>
                         </div>
                     </div>
 
                     <div class="container">
                         <div class="row">
-                            <div id="percentage-string" class="col">123%</div>
-                            <div id="listnum-string" class="col">54 listed</div>
+                            <div id="market-string" class="col">54 listed</div>
                         </div>
                     </div>
                 </div>
@@ -92,27 +91,27 @@
         query GetAccountOffers {
             users(filters: {id_in: $$idListString$$}) {
                 offersReceived(filters: {active_eq: true}) {
-                price
-                version
-                cancelledAt
-                createdAt
-                objkt {
-                    thumbnailUri
-                    name
-                    id
-                    issuer {
-                    name
-                    id
-                    objktsCount
-                    supply
-                    thumbnailUri
-                    marketStats {
-                            floor
-                            listed
-                            median
+                    price
+                    version
+                    cancelledAt
+                    createdAt
+                    objkt {
+                        thumbnailUri
+                        name
+                        id
+                        issuer {
+                            name
+                            id
+                            objktsCount
+                            supply
+                            thumbnailUri
+                            marketStats {
+                                    floor
+                                    listed
+                                    median
+                                }
                         }
                     }
-                }
                 }
                 name
                 avatarUri
@@ -158,7 +157,7 @@
 
             for (let i = 0; i < tokens.length; i++) {
                 console.log(tokens[i]);
-                addGenTokenObject(tokens[i],userName, avatarUrl);
+                addGenTokenObject(tokens[i], userName, avatarUrl);
             }
         }
 
@@ -216,18 +215,35 @@
             // token name
             $(newObj).find('.token-title').html(offerData.objkt.name);
 
-            // offer price
-            let priceStr = offerData.price.toString();
-            let priceValue = 0;
+            // process price and market status
+            let offerPrice = xtzStrToValue(offerData.price);
+            let floorPrice = xtzStrToValue(offerData.objkt.issuer.marketStats.floor);
+            let offerPercent = Math.floor(offerPrice / floorPrice * 100);
 
-            if (priceStr.length <= 6)
-                priceValue = parseFloat(priceStr) / 1000000.0;
-            else
-                priceValue = priceStr.substr(0, priceStr.length - 6);
+            let percentClass = "average";
 
-            $(newObj).find('#offer-string').html(`Offer: ${priceValue} xyz`);
+            if(offerPercent > 150)
+                percentClass = "high";
+            else if (offerPercent < 100)
+                percentClass = "low";
+
+            $(newObj).find('#offer-string').html(`Offer: ${offerPrice} <span class="${percentClass}">(${offerPercent}%)</span>`);
+
+            $(newObj).find('#market-string').html(`floor: ${floorPrice}  listed: ${offerData.objkt.issuer.marketStats.listed}`);
 
             $('#token-display').append(newObj);
+        }
+
+        function xtzStrToValue(inputData) {
+            let inputStr = inputData.toString();
+            let resultValue = 0;
+
+            if (inputStr.length <= 6)
+                resultValue = parseFloat(inputStr) / 1000000.0;
+            else
+                resultValue = inputStr.substr(0, inputStr.length - 6);
+
+            return resultValue;
         }
 
         function getIpfsUrl(ipfsStr) {

@@ -63,6 +63,29 @@ body {
     font-size: medium;
 }
 
+#offer-string span
+{
+    font-size: 0.8em;
+}
+
+#offer-string .average
+{
+    font-weight: bold;
+    color: aquamarine;
+}
+
+#offer-string .low
+{
+    font-weight: bold;
+    color: red;
+}
+
+#offer-string .high
+{
+    font-weight: bold;
+    color: chartreuse;
+}
+
 main#main-display
 {
     margin-top: 20px;
