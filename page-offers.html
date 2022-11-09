@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Whitelist checker</title>
+    <title>fxHelper - offers</title>
 
     <script src="src/jquery-3.6.0.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -21,7 +21,7 @@
 <body>
     <nav id="main-menu" class="navbar navbar-dark navbar-expand-lg bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Newyellow fxhash helper</a>
+            <a class="navbar-brand" href="index.html">fxHelper</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
                 aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -222,7 +222,7 @@
 
             // token id
             let projectId = offerData.objkt.issuer.id;
-            $(newObj).find('.token-id .check-page').attr('href', `https://fxhash.xyz/generative/${projectId}`);
+            $(newObj).find('.token-id .check-page').attr('href', `https://fxhash.xyz/marketplace/generative/${projectId}`);
             $(newObj).find('.token-id .check-page').html(`#${projectId}`);
 
             $(newObj).find('.token-id .check-holdings').attr('href', `page-tokens.html?project_id=${projectId}`);
