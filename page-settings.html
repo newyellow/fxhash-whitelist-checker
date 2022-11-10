@@ -2,6 +2,16 @@
 <html lang="en">
 
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CVZB619TWH"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-CVZB619TWH');
+    </script>
+    
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -46,7 +56,8 @@
     <main id="main-display" class="container">
 
         <div id="wallet-modify-form" class="container mb-2" style="display: none;">
-            <label class="form-label">Paste your address list<br />(the wallet name is just an alias for you to recognize your wallets)</label>
+            <label class="form-label">Paste your address list<br />(the wallet name is just an alias for you to
+                recognize your wallets)</label>
             <div class="input-group">
                 <textarea id="wallet-list-input" rows="10" class="form-control" aria-label="With textarea"
                     placeholder="wallet name 1, adress 1;&#10;wallet name 2, adress 2;&#10;......"></textarea>

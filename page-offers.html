@@ -2,6 +2,16 @@
 <html lang="en">
 
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CVZB619TWH"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-CVZB619TWH');
+    </script>
+    
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -132,8 +142,7 @@
             let walletsNames = [];
 
             // put names into id array
-            for(let i=0; i< wallets.length; i++)
-            {
+            for (let i = 0; i < wallets.length; i++) {
                 walletsNames[wallets[i].address] = wallets[i].alias;
             }
 
@@ -165,16 +174,16 @@
                     if (userDatas[index].offersReceived.length > 0) {
 
                         let userName = walletsNames[userDatas[index].id];
-                        if(userDatas[index].name != null)
+                        if (userDatas[index].name != null)
                             userName = userDatas[index].name;
 
                         let avatarImgUrl = userDatas[index].avatarUri;
-                        if(avatarImgUrl != null)
+                        if (avatarImgUrl != null)
                             avatarImgUrl = getIpfsUrl(avatarImgUrl);
 
                         addUserTokens(userDatas[index].offersReceived, userName, avatarImgUrl);
 
-                        offerCount ++;
+                        offerCount++;
                     }
                 }
             }
@@ -230,7 +239,7 @@
             // user data
             newObj.find('.holder-name').html(userName);
 
-            if(userImgUrl != null)
+            if (userImgUrl != null)
                 newObj.find('.holder-img').css('background-image', `url('${userImgUrl}')`);
 
             // process thumbnail

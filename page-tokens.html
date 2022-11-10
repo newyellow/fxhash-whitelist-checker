@@ -2,6 +2,16 @@
 <html lang="en">
 
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CVZB619TWH"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-CVZB619TWH');
+    </script>
+    
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -192,13 +202,12 @@
                     let userAvatar = resultData.users[i].avatarUri;
                     let tokens = resultData.users[i].objkts;
 
-                    if (userName == null)
-                    {
+                    if (userName == null) {
                         console.log(`user name is null, replace with ${tokenDatas[userAddress].name}`);
                         userName = tokenDatas[userAddress].userName;
                     }
 
-                    if(userAvatar != null)
+                    if (userAvatar != null)
                         userAvatar = getIpfsUrl(userAvatar);
 
                     tokenDatas[userAddress].avatarUri = userAvatar;
@@ -226,7 +235,7 @@
                 let userImgAddress = tokenDatas[addressKey].avatarUri;
                 let tokens = tokenDatas[addressKey].tokens;
 
-                if(userName == null)
+                if (userName == null)
                     userName = tokenDatas[addressKey].name;
 
                 for (let t = 0; t < tokens.length; t++) {
@@ -324,8 +333,7 @@
             newObj.find('.holder-name').html(userName);
             console.log(userImgUrl);
 
-            if (userImgUrl != null)
-            {
+            if (userImgUrl != null) {
                 newObj.find('.holder-img').css('background-image', `url("${userImgUrl}")`);
             }
 
