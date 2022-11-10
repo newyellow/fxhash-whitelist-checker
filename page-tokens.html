@@ -61,8 +61,7 @@
         <div class="card"
             style="background-image: url(https://gateway.fxhash.xyz/ipfs/QmRyum7v2jovbUrAZWYfVGAvSLsEYwhwTbZuBUK9JQon6R)">
             <div class="card-header">
-                <img class="holder-img"
-                    src="https://media.fxhash.xyz/w_256/QmU4QCnu5qVxLXzzX3ooWbq9ACqxcxh4EW49huDNDLG4Qm" />
+                <div class="holder-img"> </div>
                 <div class="holder-name">Newyellow</div>
             </div>
             <div class="card-body">
@@ -168,10 +167,11 @@
             // create wallet data containers
             for (let i = 0; i < wallets.length; i++) {
                 tokenDatas[wallets[i].address] = {
-                    'name': wallets[i].userName,
+                    'name': wallets[i].alias,
                     'tokens': []
                 };
             }
+            console.log(tokenDatas);
 
             // get all token datas
             for (let i = 0; i < requestCount; i++) {
@@ -192,18 +192,25 @@
                     let userAvatar = resultData.users[i].avatarUri;
                     let tokens = resultData.users[i].objkts;
 
-                    tokenDatas[userAddress].userName = userName;
+                    if (userName == null)
+                    {
+                        console.log(`user name is null, replace with ${tokenDatas[userAddress].name}`);
+                        userName = tokenDatas[userAddress].userName;
+                    }
+
+                    if(userAvatar != null)
+                        userAvatar = getIpfsUrl(userAvatar);
+
                     tokenDatas[userAddress].avatarUri = userAvatar;
 
                     for (let t = 0; t < tokens.length; t++)
                         tokenDatas[userAddress].tokens.push(tokens[t]);
-                    
+
                     // there are more tokens
-                    if(tokens.length >= 20)
-                    {
+                    if (tokens.length >= 20) {
                         let moreTokens = await loadAllTokens(userAddress, projectIds, queryStrings);
 
-                        for(let t=0; t< moreTokens.length; t++)
+                        for (let t = 0; t < moreTokens.length; t++)
                             tokenDatas[userAddress].tokens.push(moreTokens[t]);
                     }
                 }
@@ -216,8 +223,11 @@
             for (let i = 0; i < wallets.length; i++) {
                 let addressKey = wallets[i].address;
                 let userName = tokenDatas[addressKey].userName;
-                let userImgAddress = getIpfsUrl(tokenDatas[addressKey].avatarUri);
+                let userImgAddress = tokenDatas[addressKey].avatarUri;
                 let tokens = tokenDatas[addressKey].tokens;
+
+                if(userName == null)
+                    userName = tokenDatas[addressKey].name;
 
                 for (let t = 0; t < tokens.length; t++) {
                     tokenCount++;
@@ -281,23 +291,19 @@
             let additionalTokens = [];
             let skipCount = 20;
 
-            while(true)
-            {
+            while (true) {
                 let newDatas = await processGraphQLQuery([userAddress], queryIds, queryStrings, skipCount);
                 let tokens = newDatas.users[0].objkts;
 
-                for(let i=0; i< tokens.length; i++)
-                {
+                for (let i = 0; i < tokens.length; i++) {
                     additionalTokens.push(tokens[i]);
                 }
 
-                if(tokens.length >= 20)
-                {
+                if (tokens.length >= 20) {
                     skipCount += 20;
                     continue;
                 }
-                else
-                {
+                else {
                     break;
                 }
             }
@@ -316,7 +322,12 @@
 
             // user data
             newObj.find('.holder-name').html(userName);
-            newObj.find('.holder-img').attr('src', userImgUrl);
+            console.log(userImgUrl);
+
+            if (userImgUrl != null)
+            {
+                newObj.find('.holder-img').css('background-image', `url("${userImgUrl}")`);
+            }
 
             // process thumbnail
             let thumbnailGatewayUri = getIpfsUrl(tokenData.thumbnailUri);

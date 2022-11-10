@@ -120,6 +120,7 @@
                         }
                     }
                 }
+                id
                 name
                 avatarUri
             }
@@ -129,6 +130,16 @@
         async function CheckAccountOffers() {
 
             let wallets = getWallets();
+            let walletsNames = [];
+
+            // put names into id array
+            for(let i=0; i< wallets.length; i++)
+            {
+                walletsNames[wallets[i].address] = wallets[i].alias;
+            }
+
+            console.log(walletsNames);
+
             $('#status-bar').html('loading data ...');
             let offerCount = 0;
 
@@ -154,7 +165,10 @@
                 for (let index = 0; index < userDatas.length; index++) {
                     if (userDatas[index].offersReceived.length > 0) {
 
-                        let userName = userDatas[index].name;
+                        let userName = walletsNames[userDatas[index].id];
+                        if(userDatas[index].name != null)
+                            userName = userDatas[index].name;
+
                         let avatarImgUrl = getIpfsUrl(userDatas[index].avatarUri);
                         addUserTokens(userDatas[index].offersReceived, userName, avatarImgUrl);
 

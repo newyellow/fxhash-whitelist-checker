@@ -69,11 +69,14 @@ body {
     font-size: 1.0em;
 }
 
-#token-display .card-header img
+#token-display .card-header .holder-img
 {
     width: 48px;
+    height: 48px;
     border-radius: 30px;
     border: 2px solid #333;
+    background-color: #000;
+    background-size: cover;
 }
 
 #token-display .card-header .holder-name
