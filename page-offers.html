@@ -46,8 +46,7 @@
         <div class="card"
             style="background-image: url(https://gateway.fxhash.xyz/ipfs/QmRyum7v2jovbUrAZWYfVGAvSLsEYwhwTbZuBUK9JQon6R)">
             <div class="card-header">
-                <img class="holder-img"
-                    src="https://media.fxhash.xyz/w_256/QmU4QCnu5qVxLXzzX3ooWbq9ACqxcxh4EW49huDNDLG4Qm" />
+                <div class="holder-img"> </div>
                 <div class="holder-name">Newyellow</div>
             </div>
             <div class="card-body">
@@ -169,7 +168,10 @@
                         if(userDatas[index].name != null)
                             userName = userDatas[index].name;
 
-                        let avatarImgUrl = getIpfsUrl(userDatas[index].avatarUri);
+                        let avatarImgUrl = userDatas[index].avatarUri;
+                        if(avatarImgUrl != null)
+                            avatarImgUrl = getIpfsUrl(avatarImgUrl);
+
                         addUserTokens(userDatas[index].offersReceived, userName, avatarImgUrl);
 
                         offerCount ++;
@@ -227,7 +229,9 @@
 
             // user data
             newObj.find('.holder-name').html(userName);
-            newObj.find('.holder-img').attr('src', userImgUrl);
+
+            if(userImgUrl != null)
+                newObj.find('.holder-img').css('background-image', `url('${userImgUrl}')`);
 
             // process thumbnail
             let thumbnailGatewayUri = getIpfsUrl(offerData.objkt.thumbnailUri);
